@@ -1,0 +1,14 @@
+python-docx
+python-pptx
+pandas
+sqlalchemy
+pymupdf
+deepeval
+langchain
+langchain-community
+langchain-text-splitters
+faiss-cpu
+sentence-transformers
+fastapi
+uvicorn
+python-multipart
