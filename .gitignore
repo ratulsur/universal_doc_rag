@@ -1,35 +1,8 @@
-# macOS
-.DS_Store
-
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-*.egg-info/
-.eggs/
-build/
-dist/
-
-# Virtual envs
 env/
-.venv/
-venv/
-
-# Cache & logs
-.cache/
-logs/
-
-# Project artifacts
-data/
 faiss_index/
+data/
+logs/
 outputs/
-checkpoints/
-models/
-
-# Secrets
+__pycache__/
+.DS_Store
 .env
-*.local
-
-# Node (just in case)
-node_modules/
