@@ -1,16 +1,15 @@
 # Universal Doc RAG
 
 A retrieval-augmented generation system that ingests **any** common document format — PDF, Word,
-Excel, PowerPoint, Markdown, CSV, and SQL data — and answers questions over it, with built-in
-**RAG evaluation** (DeepEval), authentication, caching, and a test suite. Built to be a complete,
-production-shaped RAG application rather than a notebook demo.
+Excel, PowerPoint, Markdown, CSV, and SQL data — and answers questions over it. Built as a
+complete, production-shaped RAG application (authentication, caching, structured logging, tests,
+CI) rather than a notebook demo.
 
 ## What it does
 
 Upload mixed-format documents through the portal; the universal ingestor parses them — including
 **structured tables and embedded images** — chunks and embeds the content into a FAISS vector
-store, and serves contextual Q&A through an LLM. Every answer can be scored on retrieval and
-generation quality via an integrated evaluation matrix, so quality is measured, not assumed.
+store, and serves contextual Q&A through an LLM, with an in-memory cache for repeated queries.
 
 ## Features
 
@@ -19,12 +18,10 @@ generation quality via an integrated evaluation matrix, so quality is measured, 
 - **Table & image extraction** — pulls structured tables and embedded images out for analysis,
   not just raw text.
 - **RAG pipeline** — FAISS vector store + LLM for grounded, contextual question answering.
-- **Evaluation matrix** — integrated with **DeepEval** for relevancy, faithfulness, precision,
-  and recall, so retrieval and answer quality are quantified.
 - **Caching** — LangChain in-memory cache speeds up repeated queries.
 - **Authentication & portal** — login screen plus a document-upload UI.
-- **Production hygiene** — structured logging, a dedicated exception layer, a CI pipeline, and
-  10+ automated tests validated pre- and post-commit.
+- **Production hygiene** — structured logging, a dedicated exception layer, a CI pipeline, and an
+  automated test suite validated pre- and post-commit.
 
 ## Architecture
 
@@ -38,10 +35,7 @@ Documents (PDF / Word / Excel / PPT / MD / CSV / SQL)
    Chunk + Embed → FAISS vector store
         │
         ▼
-   Retrieval + LLM  ──►  contextual answer                    (+ in-memory cache)
-        │
-        ▼
-   Evaluation (DeepEval)     relevancy · faithfulness · precision · recall   (evaluation/)
+   Retrieval + LLM  ──►  contextual answer       (+ in-memory cache)
 ```
 
 Cross-cutting modules keep it maintainable: `auth/` (login), `logger/` (structured logging),
@@ -50,7 +44,7 @@ and `utils/` (config + model loaders).
 
 ## Stack
 
-Python · LangChain · FAISS · OpenAI · DeepEval · pytest
+Python · LangChain · FAISS · OpenAI · pytest
 
 ## Setup
 
@@ -77,15 +71,9 @@ pip install -r requirements.txt
 
 Then open the portal, log in, upload documents, and ask questions over them.
 
-## Evaluation
-
-Retrieval and generation quality are measured with **DeepEval** across four metrics — relevancy,
-faithfulness, precision, and recall — so changes to chunking, retrieval, or prompts can be
-compared quantitatively instead of by eyeballing answers.
-
 ## Testing
 
-10+ automated test cases run as unit tests and as pre-/post-commit validation, covering the
+Automated test cases run as unit tests and as pre-/post-commit validation, covering the
 ingestion and retrieval paths.
 
 ## Project structure
@@ -93,7 +81,6 @@ ingestion and retrieval paths.
 ```
 universal_doc_rag/
 ├── ingestor/     universal document ingestors (docs, tables, images, SQL)
-├── evaluation/   DeepEval integration (relevancy, faithfulness, precision, recall)
 ├── auth/         login / authentication
 ├── logger/       structured logging
 ├── exception/    custom exception types
@@ -105,8 +92,10 @@ universal_doc_rag/
 └── README.md
 ```
 
-## Possible extensions
+## Roadmap
 
-- Swap the in-memory cache for a persistent store (Redis) for multi-session use.
-- Add hybrid retrieval (BM25 + dense) and re-ranking for higher precision.
-- Containerize with Docker for one-command deployment.
+- **RAG evaluation** — integrate DeepEval to score relevancy, faithfulness, precision, and recall,
+  so retrieval and answer quality can be compared quantitatively across changes.
+- **Hybrid retrieval** — BM25 + dense retrieval with re-ranking for higher precision.
+- **Persistent cache** — swap in-memory caching for Redis for multi-session use.
+- **Containerization** — Docker packaging for one-command deployment.
